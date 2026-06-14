@@ -53,12 +53,16 @@ const CreatePostModal = ({ open, handleClose, onPostCreated }) => {
     }
 
     try {
-      const res = await axios.post('http://localhost:5000/api/posts', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}`
-        }
-      });
+      const res = await axios.post(
+        "https://taskplanet-social-zi9m.onrender.com/api/posts",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
       onPostCreated(res.data);
       handleCloseModal();
     } catch (err) {

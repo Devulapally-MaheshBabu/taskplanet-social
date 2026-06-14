@@ -19,9 +19,13 @@ const PostCard = ({ post, onPostUpdate }) => {
 
   const handleLike = async () => {
     try {
-      const res = await axios.post(`http://localhost:5000/api/posts/${post._id}/like`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await axios.post(
+        `https://taskplanet-social-zi9m.onrender.com/api/posts/${post._id}/like`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
       onPostUpdate(res.data);
     } catch (err) {
       console.error('Error liking post', err);
@@ -33,9 +37,13 @@ const PostCard = ({ post, onPostUpdate }) => {
     if (!text) return;
 
     try {
-      const res = await axios.post(`http://localhost:5000/api/posts/${post._id}/comment`, { text }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await axios.post(
+        `https://taskplanet-social-zi9m.onrender.com/api/posts/${post._id}/comment`,
+        { text },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
       onPostUpdate(res.data);
     } catch (err) {
       console.error('Error commenting on post', err);
@@ -43,10 +51,15 @@ const PostCard = ({ post, onPostUpdate }) => {
   };
 
   return (
-    <Card sx={{ mb: 3, borderRadius: 3, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+    <Card
+      sx={{ mb: 3, borderRadius: 3, boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+    >
       <CardHeader
         avatar={
-          <Avatar src={`https://ui-avatars.com/api/?name=${post.username}&background=random`} alt={post.username} />
+          <Avatar
+            src={`https://ui-avatars.com/api/?name=${post.username}&background=random`}
+            alt={post.username}
+          />
         }
         action={
           <IconButton aria-label="settings">
@@ -54,7 +67,7 @@ const PostCard = ({ post, onPostUpdate }) => {
           </IconButton>
         }
         title={
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <Typography variant="subtitle1" fontWeight="bold">
               {post.username}
             </Typography>
@@ -65,7 +78,7 @@ const PostCard = ({ post, onPostUpdate }) => {
         }
         subheader={moment(post.createdAt).fromNow()}
       />
-      
+
       {post.text && (
         <CardContent sx={{ pt: 0, pb: 1 }}>
           <Typography variant="body1" color="text.primary">
@@ -77,16 +90,27 @@ const PostCard = ({ post, onPostUpdate }) => {
       {post.image && (
         <CardMedia
           component="img"
-          image={post.image.startsWith('http') ? post.image : `http://localhost:5000${post.image}`}
+          image={
+            post.image.startsWith("http")
+              ? post.image
+              : `https://taskplanet-social-zi9m.onrender.com${post.image}`
+          }
           alt="Post image"
-          sx={{ maxHeight: 400, objectFit: 'cover' }}
+          sx={{ maxHeight: 400, objectFit: "cover" }}
         />
       )}
 
-      <CardActions disableSpacing sx={{ justifyContent: 'space-between', px: 2, py: 1 }}>
-        <Box sx={{ display: 'flex', gap: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <IconButton aria-label="add to favorites" onClick={handleLike} color={hasLiked ? 'error' : 'default'}>
+      <CardActions
+        disableSpacing
+        sx={{ justifyContent: "space-between", px: 2, py: 1 }}
+      >
+        <Box sx={{ display: "flex", gap: 2 }}>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <IconButton
+              aria-label="add to favorites"
+              onClick={handleLike}
+              color={hasLiked ? "error" : "default"}
+            >
               {hasLiked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
             </IconButton>
             <Typography variant="body2" color="text.secondary">
@@ -94,7 +118,7 @@ const PostCard = ({ post, onPostUpdate }) => {
             </Typography>
           </Box>
 
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
             <IconButton aria-label="comment" onClick={handleComment}>
               <ChatBubbleOutlineIcon />
             </IconButton>
@@ -103,7 +127,7 @@ const PostCard = ({ post, onPostUpdate }) => {
             </Typography>
           </Box>
 
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
             <IconButton aria-label="share">
               <ShareIcon />
             </IconButton>
@@ -113,14 +137,18 @@ const PostCard = ({ post, onPostUpdate }) => {
           </Box>
         </Box>
       </CardActions>
-      
+
       {/* Optional: Render a few recent comments */}
       {post.comments.length > 0 && (
         <Box sx={{ px: 3, pb: 2 }}>
-          <Typography variant="body2" fontWeight="bold" sx={{ mb: 1 }}>Comments</Typography>
+          <Typography variant="body2" fontWeight="bold" sx={{ mb: 1 }}>
+            Comments
+          </Typography>
           {post.comments.slice(-2).map((c, i) => (
-            <Box key={i} sx={{ display: 'flex', gap: 1, mb: 0.5 }}>
-              <Typography variant="body2" fontWeight="bold">{c.username}:</Typography>
+            <Box key={i} sx={{ display: "flex", gap: 1, mb: 0.5 }}>
+              <Typography variant="body2" fontWeight="bold">
+                {c.username}:
+              </Typography>
               <Typography variant="body2">{c.text}</Typography>
             </Box>
           ))}

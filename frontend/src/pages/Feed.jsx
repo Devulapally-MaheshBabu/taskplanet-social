@@ -27,7 +27,9 @@ const Feed = () => {
 
   const fetchPosts = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/posts');
+      const res = await axios.get(
+        "https://taskplanet-social-zi9m.onrender.com/api/posts",
+      );
       setPosts(res.data);
     } catch (err) {
       console.error('Error fetching posts', err);
