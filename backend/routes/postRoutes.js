@@ -114,4 +114,24 @@ router.post('/:id/comment', authMiddleware, async (req, res) => {
   }
 });
 
+// Delete a post (only owner can delete)
+router.delete('/:id', authMiddleware, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    // Check if the requesting user is the post owner
+    if (post.userId.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'You can only delete your own posts' });
+    }
+
+    await Post.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Post deleted successfully', id: req.params.id });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;

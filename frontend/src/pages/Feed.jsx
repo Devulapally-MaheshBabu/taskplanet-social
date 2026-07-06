@@ -42,6 +42,10 @@ const Feed = () => {
     setPosts(posts.map(p => p._id === updatedPost._id ? updatedPost : p));
   };
 
+  const handlePostDelete = (deletedPostId) => {
+    setPosts(posts.filter(p => p._id !== deletedPostId));
+  };
+
   const handlePostCreated = (newPost) => {
     setPosts([newPost, ...posts]);
   };
@@ -126,7 +130,7 @@ const Feed = () => {
           </Box>
         ) : (
           posts.map(post => (
-            <PostCard key={post._id} post={post} onPostUpdate={handlePostUpdate} />
+            <PostCard key={post._id} post={post} onPostUpdate={handlePostUpdate} onPostDelete={handlePostDelete} />
           ))
         )}
       </Container>

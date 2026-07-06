@@ -1,21 +1,43 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { 
   Card, CardHeader, CardContent, CardActions, CardMedia, 
-  Avatar, IconButton, Typography, Box, Button 
+  Avatar, IconButton, Typography, Box, Menu, MenuItem, ListItemIcon
 } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubble";
 import ShareIcon from '@mui/icons-material/Share';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import moment from 'moment';
 import { AuthContext } from '../context/AuthContext';
 
-const PostCard = ({ post, onPostUpdate }) => {
+const PostCard = ({ post, onPostUpdate, onPostDelete }) => {
   const { user, token } = useContext(AuthContext);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const menuOpen = Boolean(anchorEl);
 
   const hasLiked = post.likes.some(like => like.userId === user?._id);
+  const isOwner = post.userId === user?._id;
+
+  const handleMenuOpen = (e) => setAnchorEl(e.currentTarget);
+  const handleMenuClose = () => setAnchorEl(null);
+
+  const handleDelete = async () => {
+    handleMenuClose();
+    if (!window.confirm('Are you sure you want to delete this post?')) return;
+    try {
+      await axios.delete(
+        `https://taskplanet-social-zi9m.onrender.com/api/posts/${post._id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      onPostDelete(post._id);
+    } catch (err) {
+      console.error('Error deleting post', err);
+      alert('Failed to delete post');
+    }
+  };
 
   const handleLike = async () => {
     try {
@@ -62,9 +84,24 @@ const PostCard = ({ post, onPostUpdate }) => {
           />
         }
         action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
+          <>
+            <IconButton aria-label="settings" onClick={handleMenuOpen}>
+              <MoreVertIcon />
+            </IconButton>
+            <Menu anchorEl={anchorEl} open={menuOpen} onClose={handleMenuClose}>
+              {isOwner && (
+                <MenuItem onClick={handleDelete} sx={{ color: 'error.main' }}>
+                  <ListItemIcon><DeleteIcon fontSize="small" color="error" /></ListItemIcon>
+                  Delete Post
+                </MenuItem>
+              )}
+              {!isOwner && (
+                <MenuItem onClick={handleMenuClose} disabled>
+                  No actions available
+                </MenuItem>
+              )}
+            </Menu>
+          </>
         }
         title={
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
